@@ -90,7 +90,10 @@ def hyperopt_objective(classifier, params, attr_train, target_train, eval_metric
         'status': STATUS_OK,
         'other_metrics': {
             'mean_recall': np.mean(scores['test_recall']),
+            'std_recall': np.std(scores['test_recall']),
             'mean_accuracy': np.mean(scores['test_accuracy']),
-            'mean_roc_auc': np.mean(scores['test_roc_auc'])
+            'std_accuracy': np.std(scores['test_accuracy']),
+            'mean_roc_auc': np.mean(scores['test_roc_auc']),
+            'std_roc_auc': np.std(scores['test_roc_auc']),
         }
     }
