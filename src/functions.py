@@ -22,7 +22,7 @@ def calculate_chi_square(contingency_table):
 
 def calculate_cramers_v(chi2_stat, contingency_table):
     # Returns cramers_v measurement for the chi-square test of independence
-    # takes chi-square statistic and contingency table between the two features as arguments
+    # Takes chi-square statistic and contingency table between the two features as arguments
     # n number of observations
     # cat_ncount_first and cat_count_second are counts of unique categories in the two features
     
@@ -32,7 +32,7 @@ def calculate_cramers_v(chi2_stat, contingency_table):
 
 def construct_cramers_v_matrix(data):
     # Returns Cramér's V for all pairs of categorical variables as a dataframe
-    # the function takes dataframe as an argument
+    # The function takes dataframe as an argument
     # It creates a contingency table for each pair of variables, 
     # calculates chi-square and cramers_v and fills the resulted dataframe with the values symmetricaly
     columns = data.columns
@@ -52,19 +52,13 @@ def construct_cramers_v_matrix(data):
 
     return result_matrix
 
-def cramers_v(x, y):
-    confusion_matrix = pd.crosstab(x,y)
-    chi2 = ss.chi2_contingency(confusion_matrix)[0]
-    n = confusion_matrix.sum().sum()
-    phi2 = chi2/n
-    r,k = confusion_matrix.shape
-    phi2corr = max(0, phi2-((k-1)*(r-1))/(n-1))
-    rcorr = r-((r-1)**2)/(n-1)
-    kcorr = k-((k-1)**2)/(n-1)
-    return np.sqrt(phi2corr/min((kcorr-1),(rcorr-1)))
 
-
-def hyperopt_objective(classifier, params, attr_train, target_train, eval_metrics, encoder, random_seed):
+def hyperopt_objective(classifier, params, attr_train, target_train, eval_metrics, transformer, random_seed = 42):
+    # Objective function for optimization of hyperparameters with Hyperopt
+    # For now only works with Logistic Regression
+    # As arguments takes the name of the classifier, params, x_train and y_train,
+    # the evaluation metrics, data transformer and random seed
+    # Returns the loss and the scores of the provided evaluation metrics
     clf = None
     clf_params = None
     if classifier == 'LogisticRegression':
@@ -74,7 +68,7 @@ def hyperopt_objective(classifier, params, attr_train, target_train, eval_metric
         raise Exception('The classifier must be \'LogisticRegression\', \'RandomForest\' or ...')
         
     pipeline = Pipeline(steps = [
-            ('encode', encoder),
+            ('encode', transformer),
             ('classifier', clf)
         ]
     )
